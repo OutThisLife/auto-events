@@ -1,5 +1,5 @@
 # auto-track
 
-- Clicks
-- Page view
-- Form submit
+- [x] Clicks
+- [x] Page view
+- [x] Form submit
