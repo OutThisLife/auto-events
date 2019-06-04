@@ -49,7 +49,7 @@ export const withDevLog = () => {
     const el = document.createElement('a')
     const uri = faker.lorem.slug()
 
-    el.innerText = `Page: /${uri}`
+    el.innerText = `Route: /${uri}`
     el.href = 'javascript:;'
     el.onclick = () => pushRoute(`/${uri}`)
 
