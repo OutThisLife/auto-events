@@ -1,0 +1,61 @@
+@import _utils
+@import _dev
+
+*
+  box-sizing: border-box
+
+:root
+  --primary: #0000ee
+  --secondary: #FF2FCA
+
+html
+  font-size: flex(16px, 28px)
+  line-height: 2
+  font-family: Arial, Helvetica, sans-serif
+
+a
+  color: var(--primary)
+
+  &:hover
+    color: var(--secondary)
+
+nav
+  display: flex
+  flex-direction: column
+
+form
+  display: block
+  width: 100%
+
+  input, button
+    padding: 0.5em 0.7em
+    font-size: 1rem
+
+  .row
+    display: flex
+    align-items: center
+    justify-content: space-between
+
+    input
+      display: block
+      width: 100%
+      margin-right: 0.25rem
+
+header
+  text-align: center
+  margin: 0 0 1rem
+
+  h1
+    margin: 0
+
+main
+  display: flex
+  align-items: flex-start
+  justify-content: center
+  padding: 1rem
+
+  nav, aside
+    width: 50%
+
+  form + form
+    margin-top: 1rem

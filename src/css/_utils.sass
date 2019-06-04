@@ -1,0 +1,5 @@
+@function strip-unit($value)
+  @return $value / ($value * 0 + 1)
+
+@function flex($min, $max)
+  @return calc(#{$min} + (#{strip-unit($max)} - #{strip-unit($min)}) * (100vw - 400px) / (2000 - 400))
