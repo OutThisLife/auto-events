@@ -6,6 +6,27 @@
       "@meta": {
         "soylent": true
       }
+    },
+    {
+      "@type": "click",
+      "@selector": "#autotrack-dev a[onclick*=\"dynamicLink\"]",
+      "@meta": {
+        "action": "dynamicLink"
+      }
+    },
+    {
+      "@type": "click",
+      "@selector": "#autotrack-dev a[onclick*=\"dynamicForm\"]",
+      "@meta": {
+        "action": "dynamicForm"
+      }
+    },
+    {
+      "@type": "click",
+      "@selector": "#autotrack-dev a",
+      "@meta": {
+        "interacting": true
+      }
     }
   ]
 }

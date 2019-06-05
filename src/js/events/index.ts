@@ -55,6 +55,7 @@ export const loadJS = async (
   })
 
 export const getMeta = (group = 'click', el: HTMLElement) =>
-  (events.find(e => e['@type'] === group && el.matches(e['@selector'])) || {
-    '@meta': {}
-  })['@meta']
+  events
+    .filter(e => e['@type'] === group && el.matches(e['@selector']))
+    .map(e => e['@meta'])
+    .reduce((acc, o) => ((acc = { ...acc, ...o }), acc), {})
