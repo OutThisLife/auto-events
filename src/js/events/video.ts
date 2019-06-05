@@ -1,11 +1,11 @@
-import { loadJS, serializeAtts } from '.'
+import { getMeta, loadJS, serializeAtts } from '.'
 
 export default (analytics: SegmentAnalytics.AnalyticsJS) => {
   const trackVideo = (status: boolean | number, el: HTMLElement) =>
-    analytics.track(
-      `Web - Browsing - ${status ? 'Play' : 'Pause'} Video`,
-      serializeAtts(el)
-    )
+    analytics.track(`Web - Browsing - ${status ? 'Play' : 'Pause'} Video`, {
+      ...serializeAtts(el),
+      ...getMeta('video', el)
+    })
 
   const bindYoutube = async (el: HTMLIFrameElement) => {
     await loadJS(

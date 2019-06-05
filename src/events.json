@@ -1,1 +1,11 @@
-{}
+{
+  "events": [
+    {
+      "@type": "click",
+      "@selector": ".manual-cta",
+      "@meta": {
+        "soylent": true
+      }
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+import { events } from '../../events.json'
+
 export { default as handleClick } from './click'
 export { default as handlePage } from './page'
 export { default as handleSubmit } from './submit'
@@ -37,7 +39,6 @@ export const loadJS = async (
       let i = 0
 
       const int = setInterval(() => {
-        console.log(i)
         i++
 
         if (validate()) {
@@ -52,3 +53,8 @@ export const loadJS = async (
     el.src = src
     document.head.appendChild(el)
   })
+
+export const getMeta = (group = 'click', el: HTMLElement) =>
+  (events.find(e => e['@type'] === group && el.matches(e['@selector'])) || {
+    '@meta': {}
+  })['@meta']
