@@ -3,6 +3,7 @@ import { withDevLog } from './log'
 
 const init = () => {
   const analytics = (window as any).analytics as SegmentAnalytics.AnalyticsJS
+  withDevLog.call(null, analytics)
 
   const trackPage = handlePage.bind(null, analytics)
   const trackClick = handleClick.bind(null, analytics)
@@ -10,10 +11,20 @@ const init = () => {
   const trackVideo = handleVideo.bind(null, analytics)
 
   let href = location.href
-  const mut = new MutationObserver(() => {
+
+  const mut = new MutationObserver(([e]) => {
     if (href !== location.href) {
       href = location.href
-      window.requestAnimationFrame(trackPage)
+
+      window.requestAnimationFrame(() => {
+        trackVideo()
+        trackPage()
+      })
+    } else if (
+      e.type === 'childList' &&
+      document.querySelector('iframe:not([bound])')
+    ) {
+      window.requestAnimationFrame(trackVideo)
     }
   })
 
@@ -29,7 +40,6 @@ const init = () => {
 
   window.addEventListener('click', trackClick)
   window.addEventListener('submit', trackSubmit)
-  withDevLog.call(null, analytics)
 }
 
 window.addEventListener('load', () => 'analytics' in window && init(), {

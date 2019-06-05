@@ -32,12 +32,12 @@ export const loadJS = async (
     const el = document.createElement('script')
 
     el.id = id
-    el.src = src
     el.async = true
-
     el.onload = () => {
       let i = 0
+
       const int = setInterval(() => {
+        console.log(i)
         i++
 
         if (validate()) {
@@ -49,5 +49,6 @@ export const loadJS = async (
       }, 150)
     }
 
+    el.src = src
     document.head.appendChild(el)
   })

@@ -9,7 +9,10 @@ export default (analytics: SegmentAnalytics.AnalyticsJS) => {
 
   const bindYoutube = async (el: HTMLIFrameElement) => {
     await loadJS(
-      () => 'YT' in window && Boolean(YT.Player.prototype.constructor),
+      () =>
+        'YT' in window &&
+        'Player' in (window as any).YT &&
+        Boolean(YT.Player.prototype.constructor),
       'https://www.youtube.com/iframe_api',
       'yt-api'
     )
@@ -35,43 +38,44 @@ export default (analytics: SegmentAnalytics.AnalyticsJS) => {
   }
 
   const bindWistia = async (el: HTMLIFrameElement) => {
-    ;(window as any)._wq = (window as any)._wq || []
-
     await loadJS(
       () => 'Wistia' in window,
       'https://fast.wistia.net/assets/external/E-v1.js',
       'wistia-api'
     )
 
-    const [, videoId] = el.src.split('?')[0].match(/iframe\/(.*)$/)
-
-    if (videoId) {
-      const $div = document.createElement('div')
-      $div.className = `wistia_embed wistia_async_${videoId}`
-
-      window.requestAnimationFrame(() => {
-        el.parentNode.replaceChild($div, el)
-
-        window.requestAnimationFrame(() =>
-          (window as any)._wq.push({
-            id: videoId,
-            onReady: vid => {
-              vid.bind('play', trackVideo.bind(null, 1, el))
-              vid.bind('pause', trackVideo.bind(null, 0, el))
-            }
-          })
-        )
-      })
+    if (!('_wq' in window)) {
+      ;(window as any)._wq = []
     }
+
+    const [, videoId] = el.src.split('?')[0].match(/iframe\/(.*)$/)
+    const $div = document.createElement('div')
+
+    $div.className = `wistia_embed wistia_async_${videoId}`
+
+    window.requestAnimationFrame(() => {
+      el.parentNode.replaceChild($div, el)
+
+      window.requestAnimationFrame(() =>
+        (window as any)._wq.push({
+          id: videoId,
+          onReady: vid => {
+            vid.bind('play', trackVideo.bind(null, 1, el))
+            vid.bind('pause', trackVideo.bind(null, 0, el))
+          }
+        })
+      )
+    })
   }
 
   const $iframes = [].slice
-    .call(document.getElementsByTagName('iframe'))
+    .call(document.querySelectorAll('iframe:not([bound])') || [])
     .filter(
-      (el: HTMLIFrameElement) => !el.hasAttribute('bound')
+      (el: HTMLIFrameElement) =>
+        /youtube|vimeo|wistia/.test(el.src) && !/shim/.test(el.src)
     ) as HTMLIFrameElement[]
 
-  $iframes.forEach((el: HTMLIFrameElement) => {
+  $iframes.forEach(el => {
     const { src } = el
 
     try {
@@ -81,8 +85,6 @@ export default (analytics: SegmentAnalytics.AnalyticsJS) => {
         bindVimeo(el)
       } else if (/wistia/.test(src)) {
         bindWistia(el)
-      } else {
-        return
       }
 
       el.setAttribute('bound', '1')

@@ -6,8 +6,7 @@ export const log = (msg: string) => {
 }
 
 export const withDevLog = (analytics: SegmentAnalytics.AnalyticsJS) => {
-  log('init')
-
+  const $clone = document.querySelector('main').innerHTML
   const $log = document.querySelector('pre')
 
   const append = (
@@ -16,7 +15,7 @@ export const withDevLog = (analytics: SegmentAnalytics.AnalyticsJS) => {
     })}`
   ) =>
     log(msg) &&
-    ($log.innerHTML = `<time>${new Date().valueOf()}</time> - ${msg}<br />${
+    ($log.innerHTML = `<time>${new Date().valueOf()} ::</time> ${msg}<br />${
       $log.innerHTML
     }`)
 
@@ -30,8 +29,13 @@ export const withDevLog = (analytics: SegmentAnalytics.AnalyticsJS) => {
       )
     )
 
-  const pushRoute = (href: string) =>
+  const pushRoute = (href: string, rebuild: boolean = false) => {
     window.history.pushState({}, `${document.title} / ${href}`, href)
+
+    if (rebuild) {
+      document.querySelector('main').innerHTML = $clone
+    }
+  }
 
   const dynamicForm = () => {
     const $aside = document.querySelector('aside')
@@ -57,8 +61,10 @@ export const withDevLog = (analytics: SegmentAnalytics.AnalyticsJS) => {
     el.href = 'javascript:;'
     el.onclick = () => pushRoute(`/${uri}`)
 
-    $nav.appendChild(el)
+    $nav.insertBefore(el, $nav.querySelector('hr'))
   }
+
+  log('init')
   ;(window as any).dev = { pushRoute, dynamicForm, dynamicLink }
 }
 
