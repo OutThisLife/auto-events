@@ -4,6 +4,7 @@ export { default as handleClick } from './click'
 export { default as handlePage } from './page'
 export { default as handleSubmit } from './submit'
 export { default as handleVideo } from './video'
+export { default as handleMessage } from './message'
 
 export const serializeForm = (el: HTMLFormElement) => {
   const obj = {}

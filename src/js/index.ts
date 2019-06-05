@@ -1,4 +1,10 @@
-import { handleClick, handlePage, handleSubmit, handleVideo } from './events'
+import {
+  handleClick,
+  handleMessage,
+  handlePage,
+  handleSubmit,
+  handleVideo
+} from './events'
 import { withDevLog } from './log'
 import { isTrackable, loadJS, raf } from './utils'
 
@@ -16,12 +22,11 @@ window.addEventListener(
     let href = location.href
     const analytics = (window as any).analytics as SegmentAnalytics.AnalyticsJS
 
-    withDevLog.call(null, analytics)
-
     const trackPage = handlePage.bind(null, analytics)
     const trackClick = handleClick.bind(null, analytics)
     const trackSubmit = handleSubmit.bind(null, analytics)
     const trackVideo = handleVideo.bind(null, analytics)
+    const trackMessage = handleMessage.bind(null, analytics)
 
     const mut = new MutationObserver(([e]) => {
       if (href !== location.href) {
@@ -41,10 +46,11 @@ window.addEventListener(
       subtree: true
     })
 
-    raf(trackVideo, trackPage)
+    raf(withDevLog.bind(null, analytics), trackVideo, trackPage)
 
     window.addEventListener('click', trackClick)
     window.addEventListener('submit', trackSubmit)
+    window.addEventListener('message', trackMessage)
   }),
   {
     once: true
