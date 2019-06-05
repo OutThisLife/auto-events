@@ -1,5 +1,5 @@
 import { getMeta, serializeAtts } from '.'
-import { loadJS } from '../utils'
+import { loadJS, raf } from '../utils'
 
 export default (analytics: SegmentAnalytics.AnalyticsJS) => {
   const trackVideo = (status: boolean | number, el: HTMLElement) =>
@@ -54,10 +54,9 @@ export default (analytics: SegmentAnalytics.AnalyticsJS) => {
 
     $div.className = `wistia_embed wistia_async_${videoId}`
 
-    window.requestAnimationFrame(() => {
-      el.parentNode.replaceChild($div, el)
-
-      window.requestAnimationFrame(() =>
+    raf(
+      () => el.parentNode.replaceChild($div, el),
+      () =>
         (window as any)._wq.push({
           id: videoId,
           onReady: vid => {
@@ -65,8 +64,7 @@ export default (analytics: SegmentAnalytics.AnalyticsJS) => {
             vid.bind('pause', trackVideo.bind(null, 0, el))
           }
         })
-      )
-    })
+    )
   }
 
   const $iframes = [].slice

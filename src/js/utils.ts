@@ -49,3 +49,6 @@ export const isTrackable = async (cb = () => null) => {
     //
   }
 }
+
+export const raf = (...cb: Array<() => any>) =>
+  window.requestAnimationFrame(() => cb.map(f => f()))

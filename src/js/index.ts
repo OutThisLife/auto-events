@@ -1,6 +1,6 @@
 import { handleClick, handlePage, handleSubmit, handleVideo } from './events'
 import { withDevLog } from './log'
-import { isTrackable, loadJS } from './utils'
+import { isTrackable, loadJS, raf } from './utils'
 
 window.addEventListener(
   'load',
@@ -27,15 +27,12 @@ window.addEventListener(
       if (href !== location.href) {
         href = location.href
 
-        window.requestAnimationFrame(() => {
-          trackVideo()
-          trackPage()
-        })
+        raf(trackVideo, trackPage)
       } else if (
         e.type === 'childList' &&
         document.querySelector('iframe:not([bound])')
       ) {
-        window.requestAnimationFrame(trackVideo)
+        raf(trackVideo)
       }
     })
 
@@ -44,10 +41,7 @@ window.addEventListener(
       subtree: true
     })
 
-    window.requestAnimationFrame(() => {
-      trackVideo()
-      trackPage()
-    })
+    raf(trackVideo, trackPage)
 
     window.addEventListener('click', trackClick)
     window.addEventListener('submit', trackSubmit)
