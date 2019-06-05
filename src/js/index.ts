@@ -1,17 +1,19 @@
-import { handleClick, handlePage, handleSubmit } from './events'
+import { handleClick, handlePage, handleSubmit, handleVideo } from './events'
 import { withDevLog } from './log'
 
 const init = () => {
   const analytics = (window as any).analytics as SegmentAnalytics.AnalyticsJS
 
-  window.addEventListener('click', handleClick.bind(null, analytics))
-  window.addEventListener('submit', handleSubmit.bind(null, analytics))
+  const trackPage = handlePage.bind(null, analytics)
+  const trackClick = handleClick.bind(null, analytics)
+  const trackSubmit = handleSubmit.bind(null, analytics)
+  const trackVideo = handleVideo.bind(null, analytics)
 
   let href = location.href
   const mut = new MutationObserver(() => {
     if (href !== location.href) {
       href = location.href
-      window.requestAnimationFrame(handlePage.bind(null, analytics))
+      window.requestAnimationFrame(trackPage)
     }
   })
 
@@ -20,7 +22,14 @@ const init = () => {
     subtree: true
   })
 
-  withDevLog()
+  window.requestAnimationFrame(() => {
+    trackVideo()
+    trackPage()
+  })
+
+  window.addEventListener('click', trackClick)
+  window.addEventListener('submit', trackSubmit)
+  withDevLog.call(null, analytics)
 }
 
 window.addEventListener('load', () => 'analytics' in window && init(), {

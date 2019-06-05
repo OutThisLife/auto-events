@@ -5,12 +5,16 @@ export const log = (msg: string) => {
   return true
 }
 
-export const withDevLog = () => {
+export const withDevLog = (analytics: SegmentAnalytics.AnalyticsJS) => {
   log('init')
 
   const $log = document.querySelector('pre')
 
-  const append = (msg: string) =>
+  const append = (
+    msg: string = `Web - Browsing - Visit Page: ${JSON.stringify({
+      path: location.pathname
+    })}`
+  ) =>
     log(msg) &&
     ($log.innerHTML = `<time>${new Date().valueOf()}</time> - ${msg}<br />${
       $log.innerHTML
@@ -19,9 +23,9 @@ export const withDevLog = () => {
   'track page trackForm trackLink'
     .split(' ')
     .map(evt =>
-      (window as any).analytics.on(evt, (e: null | string, args: object) =>
+      analytics.on(evt, (e: null | string, args: object) =>
         append(
-          e ? `${e}: ${JSON.stringify(args)}` : `Page: ${location.pathname}`
+          typeof e === 'string' ? `${e}: ${JSON.stringify(args)}` : undefined
         )
       )
     )
@@ -55,8 +59,6 @@ export const withDevLog = () => {
 
     $nav.appendChild(el)
   }
-
-  append(`Page: ${location.pathname}`)
   ;(window as any).dev = { pushRoute, dynamicForm, dynamicLink }
 }
 

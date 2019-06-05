@@ -1,2 +1,2 @@
 export default (analytics: SegmentAnalytics.AnalyticsJS) =>
-  analytics.page(`Page: ${location.pathname}`)
+  analytics.page('Web - Browsing - Visit Page')
