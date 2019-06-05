@@ -26,7 +26,6 @@ export const loadJS = async (
     }
 
     el.src = src
-
     document[head ? 'head' : 'body'].appendChild(el)
   })
 
