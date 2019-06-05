@@ -25,35 +25,6 @@ export const serializeAtts = (el: HTMLElement) =>
     {}
   )
 
-export const loadJS = async (
-  validate: () => boolean = () => false,
-  src: string,
-  id: string
-) =>
-  new Promise((resolve, reject) => {
-    const el = document.createElement('script')
-
-    el.id = id
-    el.async = true
-    el.onload = () => {
-      let i = 0
-
-      const int = setInterval(() => {
-        i++
-
-        if (validate()) {
-          clearInterval(int)
-          resolve()
-        } else if (i >= 256) {
-          reject()
-        }
-      }, 150)
-    }
-
-    el.src = src
-    document.head.appendChild(el)
-  })
-
 export const getMeta = (group = 'click', el: HTMLElement) =>
   events
     .filter(e => e['@type'] === group && el.matches(e['@selector']))

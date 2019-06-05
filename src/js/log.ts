@@ -67,8 +67,3 @@ export const withDevLog = (analytics: SegmentAnalytics.AnalyticsJS) => {
   log('init')
   ;(window as any).dev = { pushRoute, dynamicForm, dynamicLink }
 }
-
-export const randStr = (len: number = 36) =>
-  Math.random()
-    .toString(len)
-    .slice(-5)

@@ -1,4 +1,5 @@
-import { getMeta, loadJS, serializeAtts } from '.'
+import { getMeta, serializeAtts } from '.'
+import { loadJS } from '../utils'
 
 export default (analytics: SegmentAnalytics.AnalyticsJS) => {
   const trackVideo = (status: boolean | number, el: HTMLElement) =>
