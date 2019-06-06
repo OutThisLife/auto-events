@@ -1,10 +1,7 @@
-import { getMeta, serializeAtts, serializeForm } from '.'
+import { getMeta, getRootElement, serializeAtts, serializeForm } from '.'
 
 export default (analytics: SegmentAnalytics.AnalyticsJS, e: MouseEvent) => {
-  const el = e.toElement as
-    | HTMLAnchorElement
-    | HTMLButtonElement
-    | HTMLInputElement
+  const el = getRootElement(e.toElement, 'input', 'button', 'a')
 
   if (el instanceof HTMLAnchorElement) {
     analytics.track(
@@ -16,7 +13,10 @@ export default (analytics: SegmentAnalytics.AnalyticsJS, e: MouseEvent) => {
         ...getMeta('click', el)
       }
     )
-  } else if (el.type === 'submit' && el.closest('form')) {
+  } else if (
+    el instanceof HTMLButtonElement ||
+    el instanceof HTMLInputElement
+  ) {
     analytics.track('Web - Form - Click Form CTA', {
       ...serializeForm(el.closest('form')),
       ...getMeta('click', el)

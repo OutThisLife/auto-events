@@ -31,3 +31,14 @@ export const getMeta = (group = 'click', el: HTMLElement) =>
     .filter(e => e['@type'] === group && el.matches(e['@selector']))
     .map(e => e['@meta'])
     .reduce((acc, o) => ((acc = { ...acc, ...o }), acc), {})
+
+export const getRootElement = (el: Element, ...types: string[]) => {
+  while (
+    el instanceof HTMLElement &&
+    !types.includes(el.tagName.toLowerCase())
+  ) {
+    el = el.parentElement
+  }
+
+  return el
+}
